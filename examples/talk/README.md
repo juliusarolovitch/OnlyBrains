@@ -5,6 +5,7 @@ run by running:
 
 '''bash 
 
+cd whisper_module
 make talk
 ./talk
 
