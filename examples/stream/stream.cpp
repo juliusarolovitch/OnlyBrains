@@ -10,8 +10,8 @@
 #include <vector>
 #include <fstream>
 
-// Define the Python script path
 const std::string PYTHON_SCRIPT_PATH = "/Users/juliusarolovitch/OnlyBrains/tts_inference.py ";
+int64_t last_transcribed = 0;
 
 void generateAndPlaySpeech(const std::string &transcribedText)
 {
@@ -29,7 +29,6 @@ void generateAndPlaySpeech(const std::string &transcribedText)
     }
 }
 
-// command-line parameters
 struct whisper_params
 {
     int32_t n_threads = std::min(4, (int32_t)std::thread::hardware_concurrency());
@@ -467,18 +466,6 @@ int main(int argc, char **argv)
                         if (params.fname_out.length() > 0)
                         {
                             fout << text;
-                            printf("Calling function!\n");
-                            std::string command = "python3.11 ";
-                            command += PYTHON_SCRIPT_PATH;
-                            command += text;
-
-                            int result = system(command.c_str());
-
-                            if (result != 0)
-                            {
-                                fprintf(stderr, "Failed to execute Python script\n");
-                                exit(1);
-                            }
                         }
                     }
                     else
@@ -487,6 +474,7 @@ int main(int argc, char **argv)
                         const int64_t t1 = whisper_full_get_segment_t1(ctx, i);
 
                         std::string output = "[" + to_timestamp(t0, false) + " --> " + to_timestamp(t1, false) + "]  " + text;
+                        printf("Now comparing last transcribed: {%lld} and t1: {%lld}\n", last_transcribed, t1);
 
                         if (whisper_full_get_segment_speaker_turn_next(ctx, i))
                         {
@@ -494,27 +482,22 @@ int main(int argc, char **argv)
                         }
 
                         output += "\n";
-
-                        printf("%s", output.c_str());
-                        fflush(stdout);
-                        if (i == n_segments - 1)
+                        printf("text is this: %s\n", text);
+                        if (t1 > last_transcribed)
                         {
-                            std::string command = "python3.11 ";
-                            command += PYTHON_SCRIPT_PATH;
-                            command += text;
-                            printf("%s\n", command.c_str());
-
-                            int result = system(command.c_str());
-
-                            if (result != 0)
+                            last_transcribed = t1;
+                            if (strcmp(text, "[BLANK AUDIO]") != 0 && strcmp(text, "Blank audio.") != 0)
                             {
-                                fprintf(stderr, "Failed to execute Python script\n");
-                                exit(1);
+                                printf("WOULD SAY %s\n", text);
+                                // generateAndPlaySpeech(text);
                             }
                         }
+                        printf("%s", output.c_str());
+                        fflush(stdout);
+
                         if (params.fname_out.length() > 0)
                         {
-                            fout << text;
+                            fout << output;
                         }
                     }
                 }
