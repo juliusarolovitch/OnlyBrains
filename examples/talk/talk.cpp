@@ -13,7 +13,7 @@
 #include <vector>
 #include <regex>
 
-const std::string PYTHON_SCRIPT_PATH = "/Users/juliusarolovitch/OnlyBrains/tts_inference.py ";
+const std::string PYTHON_SCRIPT_PATH = "tts_inference.py ";
 
 void generateAndPlaySpeech(const std::string &transcribedText)
 {
