@@ -1,5 +1,6 @@
 import cv2
 from fer import FER
+import time 
 
 def detect_dominant_emotion_from_webcam():
     cap = cv2.VideoCapture(0)
@@ -32,16 +33,18 @@ def detect_dominant_emotion_from_webcam():
     dominant_emotion, emotion_score = detector.top_emotion(frame_rgb)
 
     ### Code for displaying the one captured frame corresponding to the emotion
-    frame = cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2BGR)
-    cv2.putText(frame, f"Emotion: {dominant_emotion}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-    cv2.imshow('Captured Frame', frame)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # frame = cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2BGR)
+    # cv2.putText(frame, f"Emotion: {dominant_emotion}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+    # cv2.imshow('Captured Frame', frame)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     return dominant_emotion
 
 if __name__ == "__main__":
-    # Detect and print the dominant emotion from the webcam frame
+    start = time.time()
     dominant_emotion = detect_dominant_emotion_from_webcam()
     if dominant_emotion:
         print(f"Dominant emotion: {dominant_emotion}")
+    end = time.time()
+    print(end-start)

@@ -1,6 +1,7 @@
 import cv2
 import base64
 from openai import OpenAI
+import time
 
 ### API Key config code 
 MODEL="gpt-4o"
@@ -23,8 +24,8 @@ def capture_frame_and_encode():
     brightened_frame = cv2.convertScaleAbs(frame, alpha=brightness_factor, beta=0)
 
 
-    cv2.imshow('Brightened Frame', brightened_frame)
-    cv2.waitKey(0)  
+    # cv2.imshow('Brightened Frame', brightened_frame)
+    # cv2.waitKey(0)  
     cap.release()
 
     # Encode to JPEG (same as previous versions)
@@ -41,24 +42,23 @@ def capture_frame_and_encode():
 #capture_frame_and_encode()
 
 ### API Call Code:
+start = time.time()
 
 captured_frame_b64 = capture_frame_and_encode()
 
 response = client.chat.completions.create(
     model = MODEL, 
-    messages = [{"role": "system", "content": "You are an emotion recognition assistant who detects a persons dominant emotions from a provided image"},
+    messages = [{"role": "system", "content": "You are an emotion recognition assistant who detects a person's dominant emotions from a provided image. You are to provide a textual description of the persons emotions. "},
                 {"role": "user", "content": [
                     {"type": "text", "text": "What are the dominant emotions expressed by the person in this image?"}, 
                     {"type": "image_url", "image_url": {
-                       "url": f"data:image/png;base64, {captured_frame_b64}"}
-                   }
-               ]}], 
+                        "url": f"data:image/png;base64, {captured_frame_b64}"}
+                    }
+                ]}], 
                 temperature=0.0,
 )
 
-
-
-
 print(response.choices[0].message.content)
-
+end = time.time()
+print(end-start)
 
