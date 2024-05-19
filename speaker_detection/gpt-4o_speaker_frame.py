@@ -5,7 +5,7 @@ import time
 
 ### API Key config code 
 MODEL="gpt-4o"
-API_KEY = "sk-proj-9UJXW5YKGSuVH1NKsNlzT3BlbkFJW93qCLfqDk61s3XRT4ao"
+API_KEY = ""
 
 client = OpenAI(api_key=API_KEY)
 
