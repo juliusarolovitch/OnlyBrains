@@ -1,6 +1,6 @@
 '''from openai import OpenAI
 # single image
-client = OpenAI() #provide API key in parentheses
+client = OpenAI()
 
 response = client.chat.completions.create(
   model="gpt-4o",
@@ -113,7 +113,7 @@ import os
 import requests
 from openai import OpenAI
 
-client = OpenAI() #provide api key in parentheses
+client = OpenAI()
 video = cv2.VideoCapture("bison.mp4") #provide full path here
 base64Frames = []
 while video.isOpened():
