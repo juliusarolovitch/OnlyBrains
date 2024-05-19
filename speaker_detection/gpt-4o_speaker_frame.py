@@ -48,9 +48,9 @@ captured_frame_b64 = capture_frame_and_encode()
 
 response = client.chat.completions.create(
     model = MODEL, 
-    messages = [{"role": "system", "content": "You are an emotion recognition assistant who detects a person's dominant emotions from a provided image. You are to provide a textual description of the persons emotions. "},
+    messages = [{"role": "system", "content": "You are a video speech detection assistent, your job is to scan an image and determine whether a person in the image is speaking and who the main speaker in the image is"},
                 {"role": "user", "content": [
-                    {"type": "text", "text": "What are the dominant emotions expressed by the person in this image?"}, 
+                    {"type": "text", "text": "Who is the main speaker in the image, if anyone is speaking?"}, 
                     {"type": "image_url", "image_url": {
                         "url": f"data:image/png;base64, {captured_frame_b64}"}
                     }
