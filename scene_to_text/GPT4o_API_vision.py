@@ -1,6 +1,6 @@
 '''from openai import OpenAI
 # single image
-client = OpenAI(api_key = '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')
+client = OpenAI(api_key = 'API_KEY')
 
 response = client.chat.completions.create(
   model="gpt-4o",
@@ -113,8 +113,8 @@ import os
 import requests
 from openai import OpenAI
 
-client = OpenAI(api_key="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")
-video = cv2.VideoCapture("/Users/deven/SynologyDrive/OnlyBrains/OnlyBrains/scene_to_text/bison.mp4")
+client = OpenAI(api_key="API_KEY")
+video = cv2.VideoCapture("bison.mp4") #provide full path here
 base64Frames = []
 while video.isOpened():
     success, frame = video.read()
