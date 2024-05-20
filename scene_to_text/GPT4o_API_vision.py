@@ -1,29 +1,108 @@
-'''from openai import OpenAI
-# single image
-client = OpenAI() # provide api_key = "YOUR API KEY" in parentheses
+from openai import OpenAI
+import base64
+import requests
+import cv2
 
-response = client.chat.completions.create(
-  model="gpt-4o",
-  messages=[
+class Images:
+    def __init__(self, urls, text, local_images, apikey):
+      self.urls = urls #list of urls
+      self.text = text #string prompt
+      self.apikey = apikey #string your api key
+      self.local_images = local_images #list of image paths on local drive
+      self.client = OpenAI(api_key = apikey)
+
+    def url_images_prompt(self):
+      content = [{"type": "text", "text":self.text}]
+      for url in self.urls:
+        prompt_dict = {
+              "type": "image_url",
+              "image_url":{"url":url}
+          }
+        content.append(prompt_dict)
+      response = self.client.chat.completions.create(
+         model = "gpt-4o",
+         messages = [{
+            "role":"user",
+            "content":content
+         }],
+         max_tokens = 2000
+         )
+      
+      return response.choices[0]
+    
+    def encode_image(self, image_path):
+      with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
+        
+    def local_images_prompt(self):
+      headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {self.apikey}"
+      }
+
+      content = [{"type": "text", "text":self.text}]
+
+      for path in self.local_images:
+        base64_image = self.encode_image(path)
+        prompt = {
+           "type": "image_url",
+           "image_url": {
+              "url": f"data:image/jpeg;base64,{base64_image}"
+           }
+        }
+        content.append(prompt)
+
+      messages = [{"role":"user", "content":content}]
+      payload = {"model": "gpt-4o", "messages": messages, "max_tokens":2000}
+      response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+      
+      return response.json()
+
+class Video:
+  def __init__(self, file, text, apikey):
+    self.file = file #complete path here
+    self.text = text
+    self.client = OpenAI(api_key=apikey)
+
+  def read_frames(self):
+    video = cv2.VideoCapture(self.file)
+    base64Frames = []
+    while video.isOpened():
+      success, frame = video.read()
+      if not success:
+        break
+      _, buffer = cv2.imencode(".jpg", frame)
+      base64Frames.append(base64.b64encode(buffer).decode("utf-8"))
+
+    video.release()
+    return base64Frames
+  
+  def video_prompt(self, frame_rate=50):
+    base64Frames = self.read_frames()
+
+    PROMPT_MESSAGES = [
     {
-      "role": "user",
-      "content": [
-        {"type": "text", "text": "What's in this image?"},
-        {
-          "type": "image_url",
-          "image_url": {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-          },
-        },
-      ],
+        "role": "user",
+        "content": [
+            self.text,
+            *map(lambda x: {"image": x, "resize": 768}, base64Frames[0::frame_rate]),
+        ],
+    },
+    ]
+
+    params = {
+        "model": "gpt-4o",
+        "messages": PROMPT_MESSAGES,
+        "max_tokens": 2000,
     }
-  ],
-  max_tokens=300,
-)
 
-print(response.choices[0])'''
+    result = self.client.chat.completions.create(**params)
+    return result.choices[0].message.content
 
-# multiple images
+
+
+# SOME ADDITIONAL REF NOTES FOR ONLY IMAGE AND ONLY VIDEO INPUT
+# For reference: images, url
 '''
 client = OpenAI()
 response = client.chat.completions.create(
@@ -53,9 +132,10 @@ response = client.chat.completions.create(
   ],
   max_tokens=300,
 )
-print(response.choices[0])
+print(response.choices[0]) '''
 
-#local images
+# For reference: images, local drive
+'''
 import base64
 import requests
 
@@ -86,7 +166,7 @@ payload = {
       "content": [
         {
           "type": "text",
-          "text": "What’s in this image?"
+          "text": "What's in this image?"
         },
         {
           "type": "image_url",
@@ -104,16 +184,9 @@ response = requests.post("https://api.openai.com/v1/chat/completions", headers=h
 
 print(response.json()) '''
 
-# video input
+# For reference: video input
 
-import cv2  # We're using OpenCV to read video, to install !pip install opencv-python
-import base64
-import time
-import os
-import requests
-from openai import OpenAI
-
-client = OpenAI() #provide api_key = "YOUR API KEY" in parentheses
+'''client = OpenAI() #provide api_key = "YOUR API KEY" in parentheses
 video = cv2.VideoCapture("bison.mp4") #provide full path here
 base64Frames = []
 while video.isOpened():
@@ -142,4 +215,4 @@ params = {
 }
 
 result = client.chat.completions.create(**params)
-print(result.choices[0].message.content)
+print(result.choices[0].message.content)'''
