@@ -28,7 +28,7 @@ class Images:
          max_tokens = 2000
          )
       
-      return response.choices[0]
+      return response.choices[0].message.content
     
     def encode_image(self, image_path):
       with open(image_path, "rb") as image_file:
@@ -56,7 +56,7 @@ class Images:
       payload = {"model": "gpt-4o", "messages": messages, "max_tokens":2000}
       response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
       
-      return response.json()
+      return response.json()["choices"][0]["message"]["content"]
 
 class Video:
   def __init__(self, file, text, apikey):
