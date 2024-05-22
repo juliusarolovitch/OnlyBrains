@@ -8,8 +8,8 @@ urls = [
   "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"
 ]
 # local image files
-image_paths = ["/Users/deven/SynologyDrive/OnlyBrains/OnlyBrains/scene_to_text/dj_cooky.jpeg"]
-YOUR_API_KEY = "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"
+image_paths = ["ENTER PATH/dj_cooky.jpeg"]
+YOUR_API_KEY = "ENTER API KEY"
 imageObj = Images(urls, "Compare and contrast these two pictures if you see two images. If you see only one image, describe that image.", image_paths, YOUR_API_KEY)
 print("\nImages test. Urls.")
 print(imageObj.url_images_prompt())
@@ -17,7 +17,7 @@ print("\nImages test. Local files.")
 print(imageObj.local_images_prompt())
 
 # video file, local
-f = "/Users/deven/SynologyDrive/OnlyBrains/OnlyBrains/scene_to_text/bison.mp4"
+f = "ENTER PATH/bison.mp4"
 videoObj = Video(f, "Describe what's happening in this short video.", YOUR_API_KEY)
 print("\nVideo test.")
 print(videoObj.video_prompt())
