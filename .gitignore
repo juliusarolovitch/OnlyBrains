@@ -60,3 +60,5 @@ cmake-build-debug/
 .cxx/
 .gradle/
 local.properties
+
+mood_detection/__pycache__
